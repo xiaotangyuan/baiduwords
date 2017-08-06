@@ -15,8 +15,9 @@ from optparse import OptionParser
 
 
 def log(is_success, keyword, ip, port, info):
-	items = [str(is_success), keyword, ip, port, info]
-	print(','.join(items))
+	# items = [str(is_success), keyword, ip, port, info]
+	# print(','.join(items))
+	print is_success, keyword, ip, port, info
 
 
 def flush_word(keyword, ip, port):
@@ -35,32 +36,56 @@ def flush_word(keyword, ip, port):
 	browser.find_element_by_id('su').click()
 	# time.sleep(5)
 	is_success = True
-	return is_success, browser.title
+	return is_success, browser
 
 
 if __name__ == '__main__':
 	parser = OptionParser()
 	parser.add_option('-w', '--keyword', dest='keyword', help=u'关键词')
+	parser.add_option('-t', '--testip', dest='testip', action='store_true', help=u'测试库中的ip')
 	
 	options, args=parser.parse_args()
 	keyword = options.keyword
-	keyword = keyword.replace('_', ' ')
-	keyword = unicode(keyword, 'utf8')
+	if keyword:
+		keyword = keyword.replace('_', ' ')
+		keyword = unicode(keyword, 'utf8')
 	# print keyword
-	if keyword is None:
-		raise Exception('keyword can not be None')
+	
+	testip = options.testip
 
-	while True:
-		print '[clickword] begin get new ipinfo ···'
-		ipinfo = redis_util.get_ipinfo_from_queue()
-		if ipinfo is None:
-			raise Exception('ipinfo is None from queue, it is an error!')
-		ip, port = ipinfo.split(':')
-		try:
-			is_success, info = flush_word(keyword, ip, port)
-		except selenium.common.exceptions.TimeoutException:
-			info = 'timeout'
-		except selenium.common.exceptions.NoSuchElementException:
-			info = 'not find the element'
+	if testip is True:
+		print '====== now is testip ======'
+		while True:
+			print '[clickword] begin get new ipinfo ···'
+			ipinfo = redis_util.get_ipinfo_from_queue()
+			if ipinfo is None:
+				raise Exception('ipinfo is None from queue, it is an error!')
+			ip, port = ipinfo.split(':')
+			try:
+				is_success, browser = flush_word('ip', ip, port)
+				from bs4 import BeautifulSoup
+				soup = BeautifulSoup(browser.page_source, 'html.parser')
+				sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
+				print 'sourcecontent:', sourcecontent
+			except selenium.common.exceptions.TimeoutException:
+				print 'timeout'
+			except selenium.common.exceptions.NoSuchElementException:
+				print 'not find the element'
+	else:
+		if keyword is None:
+			raise Exception('keyword can not be None')
+		while True:
+			print '[clickword] begin get new ipinfo ···'
+			ipinfo = redis_util.get_ipinfo_from_queue()
+			if ipinfo is None:
+				raise Exception('ipinfo is None from queue, it is an error!')
+			ip, port = ipinfo.split(':')
+			try:
+				is_success, browser = flush_word(keyword, ip, port)
+				info = browser.title
+			except selenium.common.exceptions.TimeoutException:
+				info = 'timeout'
+			except selenium.common.exceptions.NoSuchElementException:
+				info = 'not find the element'
 
-		log(is_success, keyword, ip, port, info)
+			log(is_success, keyword, ip, port, info)
