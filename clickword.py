@@ -20,7 +20,7 @@ def log(is_success, keyword, ip, port, info):
 
 
 def flush_word(keyword, ip, port):
-	browser = Browser(ip, port).get_browser_obj()
+	browser = Browser(ip, port, timeout=30).get_browser_obj()
 	browser.get('http://www.baidu.com/')
 	print '[clickword] getting url ···'
 	is_success = False
@@ -31,9 +31,9 @@ def flush_word(keyword, ip, port):
 		return is_success, 'about:blank'
 	browser.find_element_by_id("kw").send_keys(keyword)
 	# browser.save_screenshot('screenshot1_send_key.png')
-	time.sleep(5)
+	# time.sleep(5)
 	browser.find_element_by_id('su').click()
-	time.sleep(5)
+	# time.sleep(5)
 	is_success = True
 	return is_success, browser.title
 
@@ -44,6 +44,9 @@ if __name__ == '__main__':
 	
 	options, args=parser.parse_args()
 	keyword = options.keyword
+	keyword = keyword.replace('_', ' ')
+	keyword = unicode(keyword, 'utf8')
+	# print keyword
 	if keyword is None:
 		raise Exception('keyword can not be None')
 

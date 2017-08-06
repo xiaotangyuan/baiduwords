@@ -4,7 +4,7 @@
 获取浏览器
 """
 
-
+from optparse import OptionParser
 from selenium import webdriver
 
 
@@ -29,7 +29,7 @@ class Browser():
 		    desired_capabilities=desired_capabilities
 		)
 		browser.set_page_load_timeout(self.timeout)
-		# browser.set_window_size(1920,1080)
+		browser.set_window_size(1920,1080)
 		return browser
 
 	def get_content(self, url):
@@ -37,3 +37,18 @@ class Browser():
 			self.browser = self.get_browser_obj()
 		self.browser.get(url)
 		return self.browser.page_source
+
+if __name__ == '__main__':
+	parser = OptionParser()
+	parser.add_option('-i', '--ipinfo', dest='ipinfo', help=u'包含ip和端口  如192.168.1.1:20')
+	
+	options, args=parser.parse_args()
+	ipinfo = options.ipinfo
+	ip, port = ipinfo.split(':')
+	url = 'http://www.baidu.com/s?wd=ip'
+	content = Browser(ip, port, 30).get_content(url)
+	# print content[:100]
+	from bs4 import BeautifulSoup
+	soup = BeautifulSoup(content, 'html.parser')
+	sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
+	print sourcecontent
