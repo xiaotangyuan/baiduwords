@@ -19,9 +19,11 @@ while True:
         print '[action.py] ipinfo remain: %s, will update ipinfo data!  %s' % (remain_ipinfo, datetime.datetime.now())
         pyfilepath = os.path.join(pythonpath, 'proxyip.py')
         order = 'python %s -s' % pyfilepath
-        commands.getstatusoutput(order)
+        res = commands.getstatusoutput(order)
+        print '[action.py] ', res
         pyfilepath = os.path.join(pythonpath, 'proxyip.py')
         order = 'python %s -r' % pyfilepath
-        commands.getstatusoutput(order)
+        res = commands.getstatusoutput(order)
+        print '[action.py] ', res
 
         time.sleep(10*60)
