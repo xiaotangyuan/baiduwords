@@ -7,6 +7,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+import gc
 import os
 import time, datetime
 import selenium
@@ -131,3 +132,5 @@ if __name__ == '__main__':
 				info = '[clickword] %s' % e
 
 			log(is_success, keyword, ip, port, info)
+			browser = None
+			gc.collect()
