@@ -39,7 +39,10 @@ def check_ipinfo(ipinfo):
 
 
 def get_ipinfo_queue_length():
-	return r.get(queue_length)
+	num = r.get(queue_length)
+	if num is None:
+		num = 0
+	return int(num)
 
 
 if __name__ == '__main__':

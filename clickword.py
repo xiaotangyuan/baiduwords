@@ -24,7 +24,7 @@ def log(is_success, keyword, ip, port, info):
 def flush_word(keyword, ip, port):
 	browser = Browser(ip, port, timeout=30).get_browser_obj()
 	browser.get('http://www.baidu.com/')
-	print '[clickword] getting url ···'
+	# print '[clickword] getting url ···'
 	is_success = False
 	# 可能代理太慢，需要等待一會
 	# time.sleep(10)
@@ -122,8 +122,13 @@ if __name__ == '__main__':
 				is_success, browser = flush_word(keyword, ip, port)
 				info = browser.title
 			except selenium.common.exceptions.TimeoutException:
+				is_success = False
 				info = '[clickword] timeout'
 			except selenium.common.exceptions.NoSuchElementException:
+				is_success = False
 				info = '[clickword] not find the element'
+			except Exception as e:
+				is_success = False
+				info = '[clickword] %s' % e
 
 			log(is_success, keyword, ip, port, info)
