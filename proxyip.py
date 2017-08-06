@@ -14,6 +14,10 @@ from optparse import OptionParser
 from utils import redis_util
 
 import re
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 
 pythonpath = os.environ['PYTHONPATH']
 
@@ -58,7 +62,13 @@ proxy_web_list = [
 	('ip3366', 'http://www.ip3366.net/'),
 	('ip3366_page2', 'http://www.ip3366.net/?page=2'),
 	('kuaidaili', 'http://www.kuaidaili.com/free/'),
+	('goubanjia', 'http://www.goubanjia.com/free/gngn/index1.shtml'),
+	('kxdaili1', 'http://www.kxdaili.com/'),
+	('kxdaili2', 'http://www.kxdaili.com/ipList/2.html#ip'),
+	('89ip', 'http://www.89ip.cn/tiqv.php?sxb=&tqsl=100&ports=&ktip=&xl=on&submit=%CC%E1++%C8%A1'),
+
 ]
+
 
 headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.48',
@@ -71,16 +81,17 @@ headers = {
 }
 
 
-
-
 def save_proxy_web_content():
 	import requests
 	for name, url in proxy_web_list:
 		# content = requests.get(url, headers=headers).text
-		content = Browser().get_content(url)
-		print content
+		try:
+			content = Browser().get_content(url)
+		except Exception as e:
+			print '[proxyip.py] error: geting %s .  %s' % (name, e)
+			continue
 		filename = os.path.join(pythonpath, 'htmlcontent', '%s.html' % name)
-		with open(filename, 'w') as f:
+		with open(filename, 'w' , encoding='utf-8') as f:
 			f.write(content)
 
 
