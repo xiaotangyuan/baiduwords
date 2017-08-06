@@ -35,5 +35,5 @@ class Browser():
 	def get_content(self, url):
 		if self.browser is None:
 			self.browser = self.get_browser_obj()
-		browser.get(url)
-		return browser.page_soure
+		self.browser.get(url)
+		return self.browser.page_source
