@@ -7,6 +7,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+import os
 import time, datetime
 import selenium
 from browser import Browser
@@ -43,9 +44,36 @@ if __name__ == '__main__':
 	parser = OptionParser()
 	parser.add_option('-w', '--keyword', dest='keyword', help=u'关键词')
 	parser.add_option('-t', '--testip', dest='testip', action='store_true', help=u'测试库中的ip')
+	parser.add_option('-s', '--singleipinfo', dest='singleipinfo', help=u'测试单个ip')
 	
 	options, args=parser.parse_args()
 	keyword = options.keyword
+	singleipinfo = options.singleipinfo
+
+	if singleipinfo:
+		ip, port = singleipinfo.split(':')
+		try:
+			print '[clickword] using %s:%s ···' % (ip, port)
+			is_success, browser = flush_word('ip', ip, port)
+			if is_success is False:
+				print browser
+				sys.exit()
+			from bs4 import BeautifulSoup
+			soup = BeautifulSoup(browser.page_source, 'html.parser')
+			ip_box = soup.find('div',class_='c-span21 c-span-last op-ip-detail')
+			if not ip_box:
+				print 'not find the element by BeautifulSoup'
+				sys.exit()
+			sourcecontent = ip_box.text.replace('\n', '')
+			print u'代理IP地址:', sourcecontent
+		except selenium.common.exceptions.TimeoutException:
+			print 'timeout'
+		except selenium.common.exceptions.NoSuchElementException:
+			print 'not find the element'
+		except Exception as e:
+			print '%s' % e
+		sys.exit()
+
 	if keyword:
 		keyword = keyword.replace('_', ' ')
 		keyword = unicode(keyword, 'utf8')
@@ -62,7 +90,7 @@ if __name__ == '__main__':
 				raise Exception('ipinfo is None from queue, it is an error!')
 			ip, port = ipinfo.split(':')
 			try:
-				print '[clickword] using %s:%s ···' % (ip, prot)
+				print '[clickword] using %s:%s ···' % (ip, port)
 				is_success, browser = flush_word('ip', ip, port)
 				if is_success is False:
 					print browser
