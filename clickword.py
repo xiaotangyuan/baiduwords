@@ -68,12 +68,18 @@ if __name__ == '__main__':
 					continue
 				from bs4 import BeautifulSoup
 				soup = BeautifulSoup(browser.page_source, 'html.parser')
-				sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
+				ip_box = soup.find('div',class_='c-span21 c-span-last op-ip-detail')
+				if not ip_box:
+					print 'not find the element by BeautifulSoup'
+					continue
+				sourcecontent = ip_box.text.replace('\n', '')
 				print 'sourcecontent:', sourcecontent
 			except selenium.common.exceptions.TimeoutException:
 				print 'timeout'
 			except selenium.common.exceptions.NoSuchElementException:
 				print 'not find the element'
+			except Exception as e:
+				print '%s' % e
 	else:
 		if keyword is None:
 			raise Exception('keyword can not be None')
