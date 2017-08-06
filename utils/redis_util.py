@@ -27,6 +27,7 @@ def get_ipinfo_from_queue():
 
 def clean_queue():
 	r.delete(queue_name)
+	r.delete(queue_length)
 
 
 def check_ipinfo(ipinfo):
