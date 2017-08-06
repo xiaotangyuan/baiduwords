@@ -6,17 +6,34 @@
 
 
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Browser():
-	def get_content(self, url):
-		dcap = dict(DesiredCapabilities.PHANTOMJS)
-		dcap["phantomjs.page.settings.userAgent"] = (
-		    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
-		    "(KHTML, like Gecko) Chrome/15.0.87"
+	def __init__(self, proxy_ip=None, proxy_port=None, timeout=10):
+		self.proxy_ip = proxy_ip
+		self.proxy_port = proxy_port
+		self.timeout = timeout
+		self.browser = None
+
+	def get_browser_obj(self):
+		desired_capabilities = webdriver.common.desired_capabilities.DesiredCapabilities.PHANTOMJS.copy()
+		if self.proxy_ip is not None and self.proxy_port is not None:
+			proxy = webdriver.common.proxy.Proxy(
+			    {
+			        'proxyType': webdriver.common.proxy.ProxyType.MANUAL,
+			        'httpProxy': '%s:%s' % (self.proxy_ip, self.proxy_port)  # 代理ip和端口
+			    }
+			)
+			proxy.add_to_capabilities(desired_capabilities)
+		browser = webdriver.PhantomJS(
+		    desired_capabilities=desired_capabilities
 		)
-		browser = webdriver.PhantomJS(desired_capabilities=dcap)
-		browser.set_window_size(1920,1080)
+		browser.set_page_load_timeout(self.timeout)
+		# browser.set_window_size(1920,1080)
+		return browser
+
+	def get_content(self, url):
+		if self.browser is None:
+			self.browser = self.get_browser_obj()
 		browser.get(url)
-		return browser.page_source
+		return browser.page_soure

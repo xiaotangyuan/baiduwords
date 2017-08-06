@@ -11,7 +11,8 @@ def push_to_queue(ipinfo):
 	r.lpush(queue_name, ipinfo)
 
 def get_ipinfo_from_queue():
-	r.brpop(queue_name)
+	_, ipinfo = r.brpop(queue_name)
+	return ipinfo
 
 def check_ipinfo(ipinfo):
 	if ':' not in ipinfo:
@@ -33,10 +34,10 @@ if __name__ == '__main__':
 	if getipinfo is True:
 		ipinfo = get_ipinfo_from_queue()
 		if ipinfo:
-			print '[redis info] get success: %s' % ipinfo
+			print '[redis info] get success: ', ipinfo
 		else:
 			print '[redis info] no ipinfo in queue: %s' % ipinfo
-	if ipinfo is not None:
+	elif ipinfo is not None:
 		if check_ipinfo(ipinfo):
 			print '[redis info] will push a ipinfo: %s' % ipinfo
 			push_to_queue(ipinfo)
