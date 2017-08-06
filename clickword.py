@@ -28,13 +28,13 @@ def flush_word(keyword, ip, port):
 	# print '[clickword] getting url ···'
 	is_success = False
 	# 可能代理太慢，需要等待一會
-	# time.sleep(10)
+	# time.sleep(2)
 	# print('this is current_url:'+browser.current_url)
-	if browser.current_url == 'about:blank':
-		return is_success, browser
+	# if browser.current_url == 'about:blank':
+	# 	return is_success, browser
 	browser.find_element_by_id("kw").send_keys(keyword)
 	# browser.save_screenshot('screenshot1_send_key.png')
-	time.sleep(5)
+	# time.sleep(5)
 	browser.find_element_by_id('su').click()
 	is_success = True
 	return is_success, browser
