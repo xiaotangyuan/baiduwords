@@ -53,7 +53,7 @@ def get_ipinfo_list():
 		ipinfos = get_ipinfo_from_text(content)
 		print htmlfile, len(ipinfos)
 		ipinfo_list.extend(ipinfos)
-	return ipinfo_list
+	return list(set(ipinfo_list))
 
 
 proxy_web_list = [
