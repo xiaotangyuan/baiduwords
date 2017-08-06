@@ -10,8 +10,11 @@ import csv
 from browser import Browser
 from bs4 import BeautifulSoup
 from io import open
+from optparse import OptionParser
 
 import re
+
+pythonpath = os.environ['PYTHONPATH']
 
 
 def get_ipinfo_from_text(htmlcontent):
@@ -24,7 +27,6 @@ def get_ipinfo_from_text(htmlcontent):
 
 
 def get_htmlcontent_files():
-	pythonpath = os.environ['PYTHONPATH']
 	htmldirname = os.path.join(pythonpath, 'htmlcontent')
 	htmlfile_list = []
 	for dirpath, dirnames, filenames in os.walk(htmldirname):
@@ -49,10 +51,34 @@ def get_ipinfo_list():
 	return ipinfo_list
 
 
-if __name__ == '__main__':
+proxy_web_list = [
+	('xici', 'http://www.xicidaili.com/nn/'),
+	('ip66', 'http://www.66ip.cn/areaindex_2/1.html'),
+	('ip3366', 'http://www.ip3366.net/'),
+	('ip3366_page2', 'http://www.ip3366.net/?page=2'),
+]
 
-	ipinfo_list = get_ipinfo_list()
-	for ipinfo in ipinfo_list:
-		print ipinfo
-	print len(ipinfo_list)
+
+def save_proxy_web_content():
+	import requests
+	for name, url in proxy_web_list:
+		content = requests.get(url).text
+		filename = os.path.join(pythonpath, 'htmlcontent', '%s.html' % name)
+		with open(filename, 'w') as f:
+			f.write(content)
+
+
+if __name__ == '__main__':
+	parser = OptionParser()
+	parser.add_option('-s', '--saveweb', dest='saveweb', action='store_true', help=u'保存网页内容')
+
+	options, args=parser.parse_args()
+	saveweb = options.saveweb
+	if saveweb is True:
+		save_proxy_web_content()
+
+	# ipinfo_list = get_ipinfo_list()
+	# for ipinfo in ipinfo_list:
+	# 	print ipinfo
+	# print len(ipinfo_list)
 
