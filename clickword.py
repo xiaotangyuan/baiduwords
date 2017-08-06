@@ -62,6 +62,7 @@ if __name__ == '__main__':
 				raise Exception('ipinfo is None from queue, it is an error!')
 			ip, port = ipinfo.split(':')
 			try:
+				print '[clickword] using %s:%s ···' % (ip, prot)
 				is_success, browser = flush_word('ip', ip, port)
 				if is_success is False:
 					print browser
