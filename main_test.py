@@ -91,6 +91,9 @@ def main():
 			except selenium.common.exceptions.NoSuchElementException:
 				print('not find the element')
 				continue
+			except selenium.common.exceptions.ElementNotVisibleException:
+				print('ElementNotVisibleException: Message: Error Message => Element is not currently visible and may not be manipulated')
+				continue
 			title = browser.title
 			soup = BeautifulSoup(browser.page_source, 'html.parser')
 			sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
