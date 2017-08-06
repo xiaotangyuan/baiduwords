@@ -30,12 +30,11 @@ def flush_word(keyword, ip, port):
 	# time.sleep(10)
 	# print('this is current_url:'+browser.current_url)
 	if browser.current_url == 'about:blank':
-		return is_success, 'about:blank'
+		return is_success, browser
 	browser.find_element_by_id("kw").send_keys(keyword)
 	# browser.save_screenshot('screenshot1_send_key.png')
-	# time.sleep(5)
+	time.sleep(5)
 	browser.find_element_by_id('su').click()
-	# time.sleep(5)
 	is_success = True
 	return is_success, browser
 
@@ -113,7 +112,7 @@ if __name__ == '__main__':
 		if keyword is None:
 			raise Exception('keyword can not be None')
 		while True:
-			print '[clickword] begin get new ipinfo ···'
+			# print '[clickword] begin get new ipinfo ···'
 			ipinfo = redis_util.get_ipinfo_from_queue()
 			if ipinfo is None:
 				raise Exception('ipinfo is None from queue, it is an error!')
