@@ -11,6 +11,7 @@ from browser import Browser
 from bs4 import BeautifulSoup
 from io import open
 from optparse import OptionParser
+from utils import redis_util
 
 import re
 
@@ -59,10 +60,19 @@ proxy_web_list = [
 ]
 
 
+headers = { "Accept":"text/html,application/xhtml+xml,application/xml;",
+	        "Accept-Encoding":"gzip",
+	        "Accept-Language":"zh-CN,zh;q=0.8",
+	        "Referer":"http://www.example.com/",
+	        "User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36"
+        }
+
+
+
 def save_proxy_web_content():
 	import requests
 	for name, url in proxy_web_list:
-		content = requests.get(url).text
+		content = requests.get(url, headers=headers).text
 		filename = os.path.join(pythonpath, 'htmlcontent', '%s.html' % name)
 		with open(filename, 'w') as f:
 			f.write(content)
@@ -71,14 +81,24 @@ def save_proxy_web_content():
 if __name__ == '__main__':
 	parser = OptionParser()
 	parser.add_option('-s', '--saveweb', dest='saveweb', action='store_true', help=u'保存网页内容')
+	parser.add_option('-r', '--toredis', dest='toredis', action='store_true', help=u'保存从网页内容提取出来的IP到redis')
+	parser.add_option('-t', '--testshowipinfo', dest='testshowipinfo', action='store_true', help=u'打印从网页内容提取出来的IP')
 
 	options, args=parser.parse_args()
 	saveweb = options.saveweb
+	toredis = options.toredis
+	testshowipinfo = options.testshowipinfo
+
 	if saveweb is True:
 		save_proxy_web_content()
 
-	# ipinfo_list = get_ipinfo_list()
-	# for ipinfo in ipinfo_list:
-	# 	print ipinfo
-	# print len(ipinfo_list)
+	if toredis is True:
+		ipinfo_list = get_ipinfo_list()
+		for ipinfo in ipinfo_list:
+			redis_util.push_to_queue(':'.join(ipinfo))
 
+	if testshowipinfo is True:
+		ipinfo_list = get_ipinfo_list()
+		for ipinfo in ipinfo_list:
+			print ':'.join(ipinfo)
+		print len(ipinfo_list)
