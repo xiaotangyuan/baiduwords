@@ -11,4 +11,4 @@ while True:
         time.sleep(60*60)
     else:
         commands.getstatusoutput(order)
-        time.sleep(10*60)
+        time.sleep(30*60)
