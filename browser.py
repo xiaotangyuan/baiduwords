@@ -6,6 +6,7 @@
 
 from optparse import OptionParser
 from selenium import webdriver
+import requests
 
 
 class Browser():
@@ -32,7 +33,9 @@ class Browser():
 		browser.set_window_size(1920,1080)
 		return browser
 
-	def get_content(self, url):
+	def get_content(self, url, client='PhantomJS'):
+		if client == 'requests':
+			return requests.get(url).text
 		if self.browser is None:
 			self.browser = self.get_browser_obj()
 		self.browser.get(url)

@@ -63,6 +63,9 @@ if __name__ == '__main__':
 			ip, port = ipinfo.split(':')
 			try:
 				is_success, browser = flush_word('ip', ip, port)
+				if is_success is False:
+					print browser
+					continue
 				from bs4 import BeautifulSoup
 				soup = BeautifulSoup(browser.page_source, 'html.parser')
 				sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
@@ -84,8 +87,8 @@ if __name__ == '__main__':
 				is_success, browser = flush_word(keyword, ip, port)
 				info = browser.title
 			except selenium.common.exceptions.TimeoutException:
-				info = 'timeout'
+				info = '[clickword] timeout'
 			except selenium.common.exceptions.NoSuchElementException:
-				info = 'not find the element'
+				info = '[clickword] not find the element'
 
 			log(is_success, keyword, ip, port, info)
