@@ -61,7 +61,7 @@ proxy_web_list = [
 ]
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0',
+    'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.48',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
     'Accept-Encoding': 'gzip, deflate',
@@ -72,10 +72,13 @@ headers = {
 
 
 
+
 def save_proxy_web_content():
 	import requests
 	for name, url in proxy_web_list:
-		content = requests.get(url, headers=headers).text
+		# content = requests.get(url, headers=headers).text
+		content = Browser().get_content(url)
+		print content
 		filename = os.path.join(pythonpath, 'htmlcontent', '%s.html' % name)
 		with open(filename, 'w') as f:
 			f.write(content)

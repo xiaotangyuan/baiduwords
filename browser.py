@@ -18,6 +18,9 @@ class Browser():
 
 	def get_browser_obj(self):
 		desired_capabilities = webdriver.common.desired_capabilities.DesiredCapabilities.PHANTOMJS.copy()
+		desired_capabilities['phantomjs.page.settings.userAgent'] = (
+			'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.48'
+		)
 		if self.proxy_ip is not None and self.proxy_port is not None:
 			proxy = webdriver.common.proxy.Proxy(
 			    {
