@@ -1,5 +1,6 @@
 """
 案例http://blog.csdn.net/tcorpion/article/details/70213435
+代理IP  http://www.xicidaili.com/
 """
 
 import time
@@ -7,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 service_args = [
-    '--proxy=182.141.60.2:9000',
+    '--proxy=125.45.115.153:8118',
     '--proxy-type=http',
     ]
 
@@ -17,18 +18,19 @@ dcap["phantomjs.page.settings.userAgent"] = (
     "(KHTML, like Gecko) Chrome/15.0.87"
 )
 dcap["phantomjs.page.settings.loadImages"] = False
-browser = webdriver.PhantomJS(desired_capabilities=dcap)
-# browser = webdriver.PhantomJS(desired_capabilities=dcap, service_args=service_args)
+# browser = webdriver.PhantomJS(desired_capabilities=dcap)
+browser = webdriver.PhantomJS(desired_capabilities=dcap, service_args=service_args)
 browser.set_window_size(1920,1080)
 # browser = webdriver.PhantomJS()
 # browser = webdriver.Chrome()
 browser.get('http://www.baidu.com/')
 print('this is current_url:'+browser.current_url)
-keyword = '刘德华'
+keyword = 'ip'
 browser.find_element_by_id("kw").send_keys(keyword)
-time.sleep(5)
 browser.save_screenshot('screenshot1_send_key.png')
+time.sleep(5)
 browser.find_element_by_id('su').click()
+time.sleep(10)
 # browser.execute_script("$('#su').click()")
 browser.save_screenshot('screenshot1_click.png')
 # try:
