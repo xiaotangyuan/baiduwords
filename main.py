@@ -2,7 +2,7 @@
 案例http://blog.csdn.net/tcorpion/article/details/70213435
 """
 
-
+import time
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
@@ -26,11 +26,16 @@ browser.get('http://www.baidu.com/')
 print('this is current_url:'+browser.current_url)
 keyword = '刘德华'
 browser.find_element_by_id("kw").send_keys(keyword)
-try:
-	browser.find_element_by_id("s_btn_wr").click()
-except Exception as e:
-    browser.save_screenshot('screenshot.png')
-browser.find_element_by_id("su").click()
+time.sleep(5)
+browser.save_screenshot('screenshot1_send_key.png')
+browser.find_element_by_id('su').click()
+# browser.execute_script("$('#su').click()")
+browser.save_screenshot('screenshot1_click.png')
+# try:
+# 	browser.find_element_by_id("s_btn_wr").click()
+# except Exception as e:
+#     browser.save_screenshot('screenshot.png')
+# browser.find_element_by_id("su").click()
 print(browser.title)
 print(browser.page_source[:200])
 
