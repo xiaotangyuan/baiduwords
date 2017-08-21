@@ -45,8 +45,9 @@ def flush_word(keyword, protocol, ip, port):
 	# browser = webdriver.PhantomJS()
 	# browser = webdriver.Chrome()
 	browser.get('http://www.baidu.com/')
-	time.sleep(15)
-	# print('this is current_url:'+browser.current_url)
+	# 可能代理太慢，需要等待一會
+	time.sleep(20)
+	print('this is current_url:'+browser.current_url)
 	# keyword = 'ip'
 	browser.find_element_by_id("kw").send_keys(keyword)
 	# browser.save_screenshot('screenshot1_send_key.png')
