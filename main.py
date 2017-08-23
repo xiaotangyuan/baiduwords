@@ -14,6 +14,10 @@ proxy_ips = [
 	('http', '223.13.69.86', '8118'),
 ]
 
+from proxyip import get_ip_list_from_csvfile
+csvfilename = 'ip_list.txt'
+proxy_ips = get_ip_list_from_csvfile(csvfilename)
+
 """
 
 import time, datetime
@@ -33,7 +37,7 @@ def flush_word(keyword, protocol, ip, port):
 	    '--proxy=%s:%s' % (ip, port),
 	    '--proxy-type=%s' % protocol,
 	    ]
-	print(datetime.datetime.now())
+	# print(datetime.datetime.now())
 	dcap = dict(DesiredCapabilities.PHANTOMJS)
 	dcap["phantomjs.page.settings.userAgent"] = (
 	    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
@@ -48,7 +52,7 @@ def flush_word(keyword, protocol, ip, port):
 	browser.get('http://www.baidu.com/')
 	# 可能代理太慢，需要等待一會
 	time.sleep(20)
-	print('this is current_url:'+browser.current_url)
+	# print('this is current_url:'+browser.current_url)
 	# keyword = 'ip'
 	browser.find_element_by_id("kw").send_keys(keyword)
 	# browser.save_screenshot('screenshot1_send_key.png')
@@ -57,13 +61,25 @@ def flush_word(keyword, protocol, ip, port):
 	time.sleep(15)
 	# browser.execute_script("$('#su').click()")
 	# browser.save_screenshot('screenshot1_click.png')
-	log(keyword, protocol, ip, port, browser.title, browser.page_source[:100])
-	print(datetime.datetime.now())
+	
+	# print(datetime.datetime.now())
 
 
-for keyword in settings.target_keywords:
-	for protocol, ip, port in settings.proxy_ips:
-		flush_word(keyword, protocol, ip, port)
+def main():
+	for keyword in settings.target_keywords:
+		for protocol, ip, port in settings.proxy_ips:
+			try:
+				flush_word(keyword, protocol, ip, port)
+				title = browser.title
+				sourcecontent = browser.page_source[:100]
+			except:
+				title = 'error fail'
+				sourcecontent = ''
+			log(keyword, protocol, ip, port, title, sourcecontent)
+
+
+if __name__ == '__main__':
+	main()
 
 # dir(browser):
  # 'add_cookie',
