@@ -1,3 +1,4 @@
+# encoding=utf8
 """
 案例http://blog.csdn.net/tcorpion/article/details/70213435
 代理IP  http://www.xicidaili.com/
