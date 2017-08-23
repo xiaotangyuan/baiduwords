@@ -3,10 +3,10 @@
 """
 获取代理IP
 
-python proxyip.py > ip_list.csv
+python proxyip.py http://xxx.com/iplist gen_ip_list_csvfile > ip_list.csv
 """
 
-
+import sys
 import csv
 from browser import Browser
 from bs4 import BeautifulSoup
@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 
 def save_content_to_file_from_url(url, save_to_file_name):
 	content = Browser().get_content(url)
-	with open('ipsourepagefile.txt', 'w', encoding='utf-8') as f:
+	with open(save_to_file_name, 'w', encoding='utf-8') as f:
 		f.write(content)
 
 
@@ -41,7 +41,7 @@ def gen_ip_from_file(filename):
 
 def get_ip_list_from_csvfile(csvfilename):
 	ip_list = []
-	with open(csvfilename, newline='', encoding='utf-8') as csvfile:
+	with open(csvfilename, 'w', newline='', encoding='utf-8') as csvfile:
 		csvreader = csv.reader(csvfile)
 		for row in csvreader:
 			ip_list.append(row)
@@ -49,8 +49,10 @@ def get_ip_list_from_csvfile(csvfilename):
 
 
 if __name__ == '__main__':
-	filename = 'ipsourepagefile.txt'
-	# gen_ip_from_file(filename)
+	url = sys.argv[1]
+	action = sys.argv[2]
+	if action == 'gen_ip_list_csvfile':
+		save_to_file_name = 'ipsourepagefile.txt'
+		save_content_to_file_from_url(url, save_to_file_name)
+		gen_ip_from_file(save_to_file_name)
 
-	csvfilename = 'ip_list.txt'
-	get_ip_list_from_csvfile(csvfilename)

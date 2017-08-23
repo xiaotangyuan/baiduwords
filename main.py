@@ -3,6 +3,10 @@
 案例http://blog.csdn.net/tcorpion/article/details/70213435
 代理IP  http://www.xicidaili.com/
 
+1 生成ip_list.csv   python proxyip.py http://xxx.com/iplist gen_ip_list_csvfile > ip_list.csv
+2 python main.py  开始执行
+
+
 settings.py
 example:
 target_keywords = [
@@ -71,7 +75,7 @@ def main():
 			try:
 				flush_word(keyword, protocol, ip, port)
 				title = browser.title
-				sourcecontent = browser.page_source[:100]
+				sourcecontent = ''
 			except:
 				title = 'error fail'
 				sourcecontent = ''
