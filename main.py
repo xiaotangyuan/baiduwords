@@ -65,7 +65,7 @@ def flush_word(keyword, protocol, ip, port):
 	time.sleep(15)
 	# browser.execute_script("$('#su').click()")
 	# browser.save_screenshot('screenshot1_click.png')
-	
+	return browser
 	# print(datetime.datetime.now())
 
 
@@ -73,7 +73,7 @@ def main():
 	for keyword in settings.target_keywords:
 		for protocol, ip, port in settings.proxy_ips:
 			try:
-				flush_word(keyword, protocol, ip, port)
+				browser = flush_word(keyword, protocol, ip, port)
 				title = browser.title
 				sourcecontent = ''
 			except:

@@ -41,7 +41,7 @@ def gen_ip_from_file(filename):
 
 def get_ip_list_from_csvfile(csvfilename):
 	ip_list = []
-	with open(csvfilename, 'w', newline='', encoding='utf-8') as csvfile:
+	with open(csvfilename, newline='', encoding='utf-8') as csvfile:
 		csvreader = csv.reader(csvfile)
 		for row in csvreader:
 			ip_list.append(row)
