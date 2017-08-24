@@ -27,10 +27,12 @@ proxy_ips = get_ip_list_from_csvfile(csvfilename)
 """
 
 import time, datetime
+import selenium
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
-
+from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.common.proxy import ProxyType
 import settings
 
 settings.target_keywords = [
@@ -43,49 +45,55 @@ def log(keyword, protocol, ip, port, res_title, res_page_source):
 
 
 def flush_word(keyword, protocol, ip, port):
-	service_args = [
-	    '--proxy=%s:%s' % (ip, port),
-	    '--proxy-type=%s' % protocol,
-	    ]
-	# print(datetime.datetime.now())
-	dcap = dict(DesiredCapabilities.PHANTOMJS)
-	dcap["phantomjs.page.settings.userAgent"] = (
-	    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
-	    "(KHTML, like Gecko) Chrome/15.0.87"
+	proxy = Proxy(
+	    {
+	        'proxyType': ProxyType.MANUAL,
+	        'httpProxy': '%s:%s' % (ip, port)  # 代理ip和端口
+	    }
 	)
-	# dcap["phantomjs.page.settings.loadImages"] = False
-	# browser = webdriver.PhantomJS(desired_capabilities=dcap)
-	browser = webdriver.PhantomJS(desired_capabilities=dcap, service_args=service_args)
+	desired_capabilities = DesiredCapabilities.PHANTOMJS.copy()
+	proxy.add_to_capabilities(desired_capabilities)
+	browser = webdriver.PhantomJS(
+	    desired_capabilities=desired_capabilities
+	)
+	browser.set_page_load_timeout(10)
 	browser.set_window_size(1920,1080)
-	# browser = webdriver.PhantomJS()
-	# browser = webdriver.Chrome()
 	browser.get('http://www.baidu.com/')
 	# 可能代理太慢，需要等待一會
-	time.sleep(20)
-	# print('this is current_url:'+browser.current_url)
+	# time.sleep(10)
+	print('this is current_url:'+browser.current_url)
+	if browser.current_url == 'about:blank':
+		return None
 	# keyword = 'ip'
 	browser.find_element_by_id("kw").send_keys(keyword)
-	# browser.save_screenshot('screenshot1_send_key.png')
+	browser.save_screenshot('screenshot1_send_key.png')
 	time.sleep(5)
 	browser.find_element_by_id('su').click()
-	time.sleep(15)
+	time.sleep(5)
 	# browser.execute_script("$('#su').click()")
-	# browser.save_screenshot('screenshot1_click.png')
+	browser.save_screenshot('screenshot1_click.png')
 	return browser
 	# print(datetime.datetime.now())
 
 
 def main():
 	for keyword in settings.target_keywords:
-		for protocol, ip, port in settings.proxy_ips:
+		for ip, port, protocol in settings.proxy_ips:
+			print('check: %s  %s %s' % (keyword, ip, port))
 			try:
 				browser = flush_word(keyword, protocol, ip, port)
-				title = browser.title
-				soup = BeautifulSoup(browser.page_source, 'html.parser')
-				sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
-			except:
-				title = 'error fail'
-				sourcecontent = ''
+				if browser is None:
+					print('can not use')
+					continue
+			except selenium.common.exceptions.TimeoutException:
+				print('timeout')
+				continue
+			title = browser.title
+			soup = BeautifulSoup(browser.page_source, 'html.parser')
+			sourcecontent = soup.find('div',class_='c-span21 c-span-last op-ip-detail').text.replace('\n', '')
+			# except:
+			# 	title = 'error fail'
+			# 	sourcecontent = ''
 			log(keyword, protocol, ip, port, title, sourcecontent)
 
 
