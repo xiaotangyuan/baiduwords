@@ -56,7 +56,7 @@ def flush_word(keyword, protocol, ip, port):
 	browser = webdriver.PhantomJS(
 	    desired_capabilities=desired_capabilities
 	)
-	browser.set_page_load_timeout(10)
+	browser.set_page_load_timeout(15)
 	browser.set_window_size(1920,1080)
 	browser.get('http://www.baidu.com/')
 	# 可能代理太慢，需要等待一會
@@ -87,6 +87,9 @@ def main():
 					continue
 			except selenium.common.exceptions.TimeoutException:
 				print('timeout')
+				continue
+			except selenium.common.exceptions.NoSuchElementException:
+				print('not find the element')
 				continue
 			title = browser.title
 			soup = BeautifulSoup(browser.page_source, 'html.parser')
