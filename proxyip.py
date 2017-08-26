@@ -10,6 +10,7 @@ import sys
 import csv
 from browser import Browser
 from bs4 import BeautifulSoup
+from io import open
 
 
 def save_content_to_file_from_url(url, save_to_file_name):

@@ -23,6 +23,9 @@ csvfilename = 'ip_list.txt'
 proxy_ips = get_ip_list_from_csvfile(csvfilename)
 
 """
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')  
 
 import time, datetime
 import selenium
